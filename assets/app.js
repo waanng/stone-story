@@ -7,6 +7,7 @@ const state = {
   query: "",
   relationFilter: "all",
   selectedRelationNode: "",
+  selectedTopic: "first-five",
 };
 
 const els = {
@@ -19,6 +20,7 @@ const els = {
   relationNotes: document.querySelector("#relationNotes"),
   relationFilters: [...document.querySelectorAll(".relation-filter")],
   topicGrid: document.querySelector("#topicGrid"),
+  topicDetail: document.querySelector("#topicDetail"),
 };
 
 const relationColors = {
@@ -194,12 +196,70 @@ function renderRelations() {
 
 function renderTopics() {
   els.topicGrid.innerHTML = state.topics.map((topic) => `
-    <article class="topic-card">
-      <h4>${topic.title}</h4>
+    <article class="topic-card ${topic.id === state.selectedTopic ? "active" : ""}" data-topic-card="${topic.id}">
+      <div class="topic-card-head">
+        <h4>${topic.title}</h4>
+        <span class="topic-stars">${stars(topic.importance)}</span>
+      </div>
       <p>${topic.focus}</p>
-      <button data-topic="${topic.id}">查看相关章节：${topic.chapters.map((c) => c).join("、")}</button>
+      <div class="topic-chapters">${topic.chapters.slice(0, 6).map((chapter) => `<span>${chapterLabel(chapter)}</span>`).join("")}</div>
+      <button data-topic="${topic.id}">进入专题</button>
     </article>
   `).join("");
+  renderTopicDetail();
+}
+
+function renderTopicDetail() {
+  const topic = state.topics.find((item) => item.id === state.selectedTopic) || state.topics[0];
+  if (!topic || !els.topicDetail) return;
+  state.selectedTopic = topic.id;
+  els.topicDetail.innerHTML = `
+    <article class="topic-detail-shell">
+      <div class="topic-main">
+        <div class="topic-detail-head">
+          <div>
+            <span class="topic-eyebrow">高考专题</span>
+            <h4>${topic.title}</h4>
+          </div>
+          <span class="topic-stars">${stars(topic.importance)}</span>
+        </div>
+        <section class="topic-block">
+          <h5>这个专题考什么</h5>
+          <p>${topic.exam_target}</p>
+        </section>
+        <section class="topic-block">
+          <h5>核心理解</h5>
+          <p>${topic.core}</p>
+        </section>
+        <section class="topic-block">
+          <h5>常见问法</h5>
+          <div class="topic-question-list">
+            ${topic.questions.map((question) => `<p>${question}</p>`).join("")}
+          </div>
+        </section>
+        <section class="topic-block answer-block">
+          <h5>参考答案模板</h5>
+          <p>${topic.answer_template}</p>
+        </section>
+      </div>
+      <aside class="topic-side">
+        <section class="topic-block">
+          <h5>必会人物</h5>
+          <div class="chips">${topic.people.map((name) => `<span class="chip">${name}</span>`).join("")}</div>
+        </section>
+        <section class="topic-block">
+          <h5>必须记住</h5>
+          <div class="topic-know-list">${topic.must_know.map((item) => `<span>${item}</span>`).join("")}</div>
+        </section>
+        <section class="topic-block">
+          <h5>相关章节</h5>
+          <div class="topic-chapter-buttons">
+            ${topic.chapters.map((chapter) => `<button data-topic-chapter="${chapter}">${chapterLabel(chapter)}</button>`).join("")}
+          </div>
+        </section>
+      </aside>
+    </article>
+  `;
 }
 
 function bindEvents() {
@@ -263,14 +323,24 @@ function bindEvents() {
 
   els.topicGrid.addEventListener("click", (event) => {
     const button = event.target.closest("[data-topic]");
-    if (!button) return;
-    const topic = state.topics.find((item) => item.id === button.dataset.topic);
+    const card = event.target.closest("[data-topic-card]");
+    const topicId = button?.dataset.topic || card?.dataset.topicCard;
+    if (!topicId) return;
+    const topic = state.topics.find((item) => item.id === topicId);
     if (!topic) return;
+    state.selectedTopic = topic.id;
+    renderTopics();
+    els.topicDetail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+
+  els.topicDetail.addEventListener("click", (event) => {
+    const chapterButton = event.target.closest("[data-topic-chapter]");
+    if (!chapterButton) return;
     state.filter = "all";
     state.query = "";
     els.search.value = "";
     els.filters.forEach((item) => item.classList.toggle("active", item.dataset.filter === "all"));
-    state.selected = topic.chapters[0];
+    state.selected = Number(chapterButton.dataset.topicChapter);
     renderChapters();
     renderDetail();
     document.querySelector("#chapters").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -285,6 +355,7 @@ async function init() {
     state.chapters = data.chapters;
     state.relations = data.relations;
     state.topics = data.topics;
+    state.selectedTopic = state.topics[0]?.id || state.selectedTopic;
     document.querySelector("#metric-chapters").textContent = state.chapters.length;
     bindEvents();
     renderChapters();
