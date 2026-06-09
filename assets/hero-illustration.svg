@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title desc">
+  <title id="title">红楼梦整本书阅读地图插图</title>
+  <desc id="desc">打开的书卷、大观园亭台、人物节点和关系线构成的学习地图意象。</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#fff7e8"/>
+      <stop offset="1" stop-color="#e7d6b8"/>
+    </linearGradient>
+    <linearGradient id="jade" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#4b8b84"/>
+      <stop offset="1" stop-color="#1f5654"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#3b2612" flood-opacity=".18"/>
+    </filter>
+    <pattern id="grain" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M4 8h1M20 4h1M12 24h1M28 18h1" stroke="#8b6d48" stroke-opacity=".18"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="560" rx="28" fill="#f4efe3"/>
+  <rect width="900" height="560" rx="28" fill="url(#grain)"/>
+  <path d="M62 96c112-66 213-70 310-35 120 43 230 22 344-16 66-22 112-16 142 16v438H62z" fill="#ead9bd" opacity=".55"/>
+  <g opacity=".35" stroke="#8b5e3c" stroke-width="2" fill="none">
+    <path d="M98 177c68-36 134-46 198-30M642 120c72-32 136-28 194 10M684 164c50-36 101-41 153-18"/>
+    <path d="M685 132h120l28 40H657z"/>
+    <path d="M701 171v83M793 171v83M671 254h156"/>
+  </g>
+  <g filter="url(#softShadow)">
+    <path d="M116 158c96-18 196-8 302 30v286c-104-42-205-51-302-26z" fill="url(#paper)" stroke="#bfa985" stroke-width="3"/>
+    <path d="M418 188c112-39 226-48 342-20v280c-112-24-226-15-342 26z" fill="url(#paper)" stroke="#bfa985" stroke-width="3"/>
+    <path d="M418 188v286" stroke="#c3ad89" stroke-width="4"/>
+    <path d="M129 449c96-19 193-9 289 25M418 474c106-39 214-48 326-25" fill="none" stroke="#9c815b" stroke-width="6" stroke-linecap="round" opacity=".5"/>
+  </g>
+  <g stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M248 242c79-27 158-25 236 5 84 32 162 28 233-12" stroke="#a33b2b" stroke-width="3" stroke-dasharray="7 10" opacity=".72"/>
+    <path d="M247 331c75-35 151-35 228 1 70 32 143 31 220-3" stroke="#2c6a68" stroke-width="3" stroke-dasharray="5 9" opacity=".65"/>
+    <path d="M331 192c35 94 93 142 174 145 76 3 128-34 158-111" stroke="#b4893c" stroke-width="2.5" stroke-dasharray="4 9" opacity=".68"/>
+  </g>
+  <g>
+    <circle cx="248" cy="242" r="38" fill="#fff8ef" stroke="#a33b2b" stroke-width="4"/>
+    <circle cx="331" cy="192" r="34" fill="#fff8ef" stroke="#2c6a68" stroke-width="4"/>
+    <circle cx="485" cy="333" r="39" fill="#fff8ef" stroke="#b4893c" stroke-width="4"/>
+    <circle cx="662" cy="226" r="36" fill="#fff8ef" stroke="#a33b2b" stroke-width="4"/>
+    <circle cx="695" cy="329" r="31" fill="#fff8ef" stroke="#2c6a68" stroke-width="4"/>
+  </g>
+  <g fill="#30261f">
+    <path d="M231 248c8-25 27-37 47-26 12 7 17 22 14 37-16-16-37-16-61-11z"/>
+    <path d="M318 197c8-23 26-33 45-23 11 6 15 20 11 34-15-14-34-14-56-11z"/>
+    <path d="M468 339c9-25 30-37 51-25 12 7 16 23 12 38-17-17-39-17-63-13z"/>
+    <path d="M646 231c8-23 27-33 46-23 11 7 15 22 10 35-15-15-34-16-56-12z"/>
+    <path d="M681 333c7-20 23-29 40-21 10 5 14 18 10 30-14-12-30-13-50-9z"/>
+  </g>
+  <g fill="url(#jade)" opacity=".92">
+    <path d="M278 282c-10 30-49 30-60 0 12-11 48-11 60 0z"/>
+    <path d="M361 232c-9 27-44 27-54 0 11-10 43-10 54 0z"/>
+    <path d="M517 375c-11 31-51 31-63 0 13-12 50-12 63 0z"/>
+    <path d="M692 264c-10 28-47 28-57 0 11-10 45-10 57 0z"/>
+    <path d="M721 362c-8 23-38 23-47 0 10-8 37-8 47 0z"/>
+  </g>
+  <g fill="#a33b2b" opacity=".85">
+    <circle cx="248" cy="242" r="7"/>
+    <circle cx="331" cy="192" r="7"/>
+    <circle cx="485" cy="333" r="7"/>
+    <circle cx="662" cy="226" r="7"/>
+    <circle cx="695" cy="329" r="7"/>
+    <circle cx="405" cy="244" r="5"/>
+    <circle cx="574" cy="306" r="5"/>
+  </g>
+  <g stroke="#a33b2b" stroke-width="3" opacity=".7" fill="none">
+    <path d="M132 119c31-32 68-35 110-8"/>
+    <path d="M160 92c-13-27-5-45 25-54"/>
+    <path d="M189 112c-3-28 10-45 40-52"/>
+  </g>
+  <g fill="#a33b2b" opacity=".72">
+    <path d="M121 124c26-12 44-8 55 10-25 8-43 5-55-10z"/>
+    <path d="M169 82c20-19 38-22 53-9-18 17-35 20-53 9z"/>
+    <path d="M204 104c23-14 42-13 56 4-22 12-40 11-56-4z"/>
+  </g>
+  <g transform="translate(728 392)">
+    <rect x="0" y="0" width="92" height="92" rx="14" fill="#a33b2b" opacity=".9"/>
+    <path d="M23 27h46M23 47h46M23 67h34M32 18v58M58 18v49" stroke="#fff0d9" stroke-width="4" stroke-linecap="round"/>
+  </g>
+</svg>
