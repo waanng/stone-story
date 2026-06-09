@@ -9,9 +9,11 @@ from urllib.error import HTTPError, URLError
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+LITERATURE_ROOT = Path(__file__).resolve().parents[3]
 DATA_DIR = ROOT / "data"
 RAW_DIR = DATA_DIR / "raw_chapters"
 READER_DIR = DATA_DIR / "chapter_pages"
+EXTERNAL_SUMMARY_DIR = LITERATURE_ROOT / "红楼梦摘要"
 USER_AGENT = "CodexHonglouExamMap/1.0 (local educational study site)"
 
 CORE_CHARACTERS = [
@@ -403,6 +405,30 @@ def build_content_summary(chapter, title, events, characters, text):
     )
 
 
+def clean_external_summary(raw_text):
+    lines = [line.strip() for line in raw_text.splitlines()]
+    lines = [line for line in lines if line]
+    if lines and re.match(r"^第\s*\d+\s*回|^第[一二三四五六七八九十百〇零]+回", lines[0]):
+        lines = lines[1:]
+    return "\n".join(lines).strip()
+
+
+def load_external_summaries():
+    summaries = {}
+    if not EXTERNAL_SUMMARY_DIR.exists():
+        print(f"external summary directory not found: {EXTERNAL_SUMMARY_DIR}")
+        return summaries
+    for path in EXTERNAL_SUMMARY_DIR.glob("第*回_*.txt"):
+        match = re.search(r"第(\d{3})回", path.name)
+        if not match:
+            continue
+        chapter = int(match.group(1))
+        summary = clean_external_summary(path.read_text(encoding="utf-8"))
+        if summary:
+            summaries[chapter] = summary
+    return summaries
+
+
 def generic_question(chapter, title, exam_points):
     point = exam_points[0] if exam_points else "情节作用"
     clean_title = re.sub(r"^第[一二三四五六七八九十百〇零\d]+回\s*", "", title).strip()
@@ -572,6 +598,9 @@ def write_reader_page(chapter, title, text):
 def build_chapters():
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     chapters = []
+    external_summaries = load_external_summaries()
+    if len(external_summaries) != 120:
+        print(f"loaded {len(external_summaries)} external summaries from {EXTERNAL_SUMMARY_DIR}")
     try:
         chapter_titles = fetch_chapter_titles()
     except Exception as exc:
@@ -636,7 +665,7 @@ def build_chapters():
 
         if text:
             write_reader_page(chapter, title, text)
-        content_summary = build_content_summary(chapter, title, events, chars, text)
+        content_summary = external_summaries.get(chapter) or build_content_summary(chapter, title, events, chars, text)
         plot_summary = build_plot_summary(chapter, title, summary, events, chars, exam)
         question, reference_answer = build_question_and_answer(
             chapter, title, summary, events, chars, exam, question
