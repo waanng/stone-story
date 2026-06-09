@@ -387,6 +387,38 @@ def generic_answer(chapter, title, summary, events, characters, exam_points):
     )
 
 
+def build_plot_summary(chapter, title, summary, events, characters, exam_points):
+    title_parts = split_title_parts(title)
+    first_line = title_parts[0] if title_parts else title
+    second_line = title_parts[1] if len(title_parts) > 1 else ""
+    character_text = "、".join(characters[:5]) if characters else "本回相关人物"
+    point_text = "、".join(exam_points[:3]) if exam_points else "情节推进、人物关系、前后照应"
+    event_sentence = "，继而".join(events[:4])
+    if len(events) >= 4 and not events[0].startswith("围绕"):
+        return (
+            f"本回主要写{summary}"
+            f"情节从{events[0]}展开，继而{events[1]}，随后{events[2]}，最后落到{events[3]}。"
+            f"这些事件不是孤立片段，而是共同推动本回人物关系和后续情节发展。"
+            f"其中，{character_text}的言行尤其值得注意：他们一方面承担具体情节推进，另一方面也显出各自的性格、身份处境和价值选择。"
+            f"阅读时还要留意事件发生的空间、人物说话的分寸和情绪变化，因为《红楼梦》常把家族规矩、亲疏远近和命运暗示藏在日常场面里。"
+            f"从整本书看，本回既要记住“发生了什么”，也要理解这些情节怎样连接人物命运、贾府秩序以及后文的伏笔，尤其可联系{point_text}来把握。"
+        )
+    if second_line:
+        return (
+            f"本回主要围绕“{first_line}”和“{second_line}”展开。前一线索提示本回开端或主要事件，后一线索则推进另一组人物关系或情节变化，二者合在一起构成本回的叙事重心。"
+            f"从人物上看，本回涉及{character_text}，他们的言行使前后章节的关系进一步衔接。"
+            f"情节功能上，本回一方面承接此前已经形成的人物处境，另一方面为后文冲突、误会、情感变化或家族秩序的演变预留空间。"
+            f"具体阅读时，要抓住回目中的人物、动作和情绪词，再回到原文中看谁在推动事件、谁在承受结果、谁的处境因此发生细微变化。"
+            f"这样就能把本回放进人物关系变化、贾府兴衰和女性命运的脉络中理解，并从{point_text}等角度提炼出考试需要的情节作用。"
+        )
+    return (
+        f"本回主要围绕“{first_line}”展开，核心任务是交代相关人物的行动、处境和关系变化。"
+        f"从人物上看，本回涉及{character_text}，他们的言行承接前文，也为后续情节留下线索。"
+        f"阅读时不宜只记零散事件，而应抓住本回在全书中的承上启下作用：它既推动具体情节向前发展，也帮助读者理解人物性格、家族秩序和命运走向。"
+        f"如果用来备考，可以重点追问三个问题：本回改变了谁的处境，暴露了哪一种关系，给后文留下了什么伏笔。"
+    )
+
+
 def build_question_and_answer(chapter, title, summary, events, characters, exam_points, question):
     if chapter in CURATED_ANSWERS:
         return question, CURATED_ANSWERS[chapter]
@@ -566,6 +598,7 @@ def build_chapters():
 
         if text:
             write_reader_page(chapter, title, text)
+        plot_summary = build_plot_summary(chapter, title, summary, events, chars, exam)
         question, reference_answer = build_question_and_answer(
             chapter, title, summary, events, chars, exam, question
         )
@@ -575,6 +608,7 @@ def build_chapters():
             "title": title,
             "importance": importance,
             "summary": summary,
+            "plot_summary": plot_summary,
             "events": events,
             "characters": chars,
             "exam_points": exam,

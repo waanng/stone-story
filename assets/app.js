@@ -85,7 +85,7 @@ function renderDetail() {
     </div>
     <div class="detail-block">
       <h4>主要情节</h4>
-      <ul>${item.events.map((event) => `<li>${event}</li>`).join("")}</ul>
+      <p class="plot-summary">${item.plot_summary || (item.events || []).join("。")}</p>
     </div>
     <div class="detail-block">
       <h4>本回人物</h4>
