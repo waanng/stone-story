@@ -356,6 +356,16 @@ def extract_quote(text):
     return joined[:260]
 
 
+def extract_plain_excerpt(text, limit=150):
+    lines = [re.sub(r"\s+", "", line.strip()) for line in text.splitlines()]
+    lines = [
+        line for line in lines
+        if line and "上一回" not in line and "下一回" not in line and "回目录" not in line
+    ]
+    joined = "。".join(lines)
+    return joined[:limit]
+
+
 def split_title_parts(title):
     title = re.sub(r"^第[一二三四五六七八九十百〇零\d]+回\s*", "", title).strip()
     parts = re.split(r"\s+", title, maxsplit=1)
@@ -363,6 +373,35 @@ def split_title_parts(title):
         mid = len(title) // 2
         return [title[:mid], title[mid:]]
     return parts
+
+
+def build_content_summary(chapter, title, events, characters, text):
+    title_parts = split_title_parts(title)
+    first_line = title_parts[0] if title_parts else title
+    second_line = title_parts[1] if len(title_parts) > 1 else ""
+    character_text = "、".join(characters[:5]) if characters else "本回人物"
+    if len(events) >= 4 and not events[0].startswith("围绕"):
+        return (
+            f"本回写{events[0]}，随后{events[1]}，情节继续发展到{events[2]}，最后以{events[3]}收束。"
+            f"围绕这些事件，{character_text}先后出场或被牵连进情节之中，人物之间的接触、言语和反应构成了本回的主要内容。"
+            f"这一回通常先交代事件起因，再写人物往来和场面变化，最后把故事推进到新的状态。"
+            f"整回内容可以理解为一段连续的情节推进：开端引出人物处境，中段出现关键接触或变化，结尾留下下一回继续发展的局面。"
+        )
+    excerpt = extract_plain_excerpt(text, 90) if text else ""
+    if second_line:
+        return (
+            f"本回内容围绕“{first_line}”和“{second_line}”展开。前一部分交代相关人物和事件的起因，后一部分继续写另一组人物行动或情节变化。"
+            f"本回涉及{character_text}，他们在这一回中通过对话、往来或冲突把故事向前推进。"
+            f"{('原文开头承接前事，从“' + excerpt + '……”接入本回场面。') if excerpt else ''}"
+            f"随后情节沿着回目提示的两件事展开：一边写人物所处的具体场景，一边写新的言行、误会、往来或结果。"
+            f"到本回结尾，相关人物的处境被推到一个新的停顿点。"
+        )
+    return (
+        f"本回内容主要围绕“{first_line}”展开，写相关人物在这一阶段的行动和遭遇。"
+        f"本回涉及{character_text}，情节通过他们的对话、往来或冲突逐步推进。"
+        f"{('原文开头承接前事，从“' + excerpt + '……”接入本回场面。') if excerpt else ''}"
+        f"随后故事继续写人物之间的接触和事件变化，最后把这一回的情节停在新的状态上。"
+    )
 
 
 def generic_question(chapter, title, exam_points):
@@ -598,6 +637,7 @@ def build_chapters():
 
         if text:
             write_reader_page(chapter, title, text)
+        content_summary = build_content_summary(chapter, title, events, chars, text)
         plot_summary = build_plot_summary(chapter, title, summary, events, chars, exam)
         question, reference_answer = build_question_and_answer(
             chapter, title, summary, events, chars, exam, question
@@ -608,6 +648,7 @@ def build_chapters():
             "title": title,
             "importance": importance,
             "summary": summary,
+            "content_summary": content_summary,
             "plot_summary": plot_summary,
             "events": events,
             "characters": chars,

@@ -80,11 +80,11 @@ function renderDetail() {
     <div class="detail-title">${item.title}</div>
     <div class="stars" aria-label="考试重要度">${stars(item.importance)}</div>
     <div class="detail-block">
-      <h4>一句话概括</h4>
-      <p>${item.summary}</p>
+      <h4>本章内容提要</h4>
+      <p class="content-summary">${item.content_summary || item.summary}</p>
     </div>
     <div class="detail-block">
-      <h4>主要情节</h4>
+      <h4>内容解析</h4>
       <p class="plot-summary">${item.plot_summary || (item.events || []).join("。")}</p>
     </div>
     <div class="detail-block">
