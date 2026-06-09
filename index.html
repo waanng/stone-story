@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>红楼梦高考地图</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">梦</div>
+          <div>
+            <h1>红楼梦高考地图</h1>
+            <p>章节 · 人物 · 考点</p>
+          </div>
+        </div>
+        <nav class="nav" aria-label="主导航">
+          <a href="#overview" class="active">首页总览</a>
+          <a href="#chapters">章节地图</a>
+          <a href="#relations">人物关系</a>
+          <a href="#topics">高考专题</a>
+          <a href="#practice">答题训练</a>
+        </nav>
+        <div class="study-plan">
+          <span>7 天路径</span>
+          <ol>
+            <li>前五回总纲</li>
+            <li>贾府关系</li>
+            <li>宝黛钗</li>
+            <li>王熙凤与探春</li>
+            <li>大观园</li>
+            <li>贾府衰败</li>
+            <li>题型训练</li>
+          </ol>
+        </div>
+      </aside>
+
+      <main>
+        <section id="overview" class="hero-section">
+          <div>
+            <p class="section-label">为北京高考整本书阅读设计</p>
+            <h2>先看懂结构，再记住细节。</h2>
+            <p class="lead">这版把《红楼梦》拆成章节脉络、人物关系和高频考点三张图。孩子选中任意一回，就能看到本回摘要、出场人物、关系变化和可能考法。</p>
+          </div>
+          <div class="hero-metrics" aria-label="内容概览">
+            <div><strong id="metric-chapters">120</strong><span>回章节</span></div>
+            <div><strong>18</strong><span>精讲重点回</span></div>
+            <div><strong>6</strong><span>高考专题</span></div>
+            <div><strong>30+</strong><span>核心人物</span></div>
+          </div>
+        </section>
+
+        <section class="toolbar" aria-label="章节筛选">
+          <label class="search-box">
+            <span>检索</span>
+            <input id="searchInput" type="search" placeholder="输入人物、回目、考点，如 黛玉 / 前五回 / 抄检" />
+          </label>
+          <div class="filters" role="group" aria-label="重要度筛选">
+            <button class="filter active" data-filter="all">全部</button>
+            <button class="filter" data-filter="5">★★★★★</button>
+            <button class="filter" data-filter="4">★★★★</button>
+            <button class="filter" data-filter="3">★★★</button>
+          </div>
+        </section>
+
+        <section class="dashboard-grid">
+          <div id="chapters" class="panel chapter-panel">
+            <div class="panel-head">
+              <div>
+                <p class="section-label">Chapter Map</p>
+                <h3>120 回章节地图</h3>
+              </div>
+              <span id="chapterCount">加载中</span>
+            </div>
+            <div id="chapterGrid" class="chapter-grid" aria-live="polite"></div>
+          </div>
+
+          <article class="panel detail-panel" id="chapterDetail" aria-live="polite">
+            <div class="empty-state">正在加载章节资料。</div>
+          </article>
+        </section>
+
+        <section id="relations" class="panel relationship-section">
+          <div class="panel-head">
+            <div>
+              <p class="section-label">Relationship</p>
+              <h3>人物关系图</h3>
+            </div>
+            <span>颜色区分关系类型</span>
+          </div>
+          <div class="relationship-layout">
+            <svg id="relationSvg" viewBox="0 0 900 420" role="img" aria-label="红楼梦核心人物关系图"></svg>
+            <div id="relationNotes" class="relation-notes"></div>
+          </div>
+        </section>
+
+        <section id="topics" class="panel topic-section">
+          <div class="panel-head">
+            <div>
+              <p class="section-label">Exam Topics</p>
+              <h3>高考专题</h3>
+            </div>
+          </div>
+          <div id="topicGrid" class="topic-grid"></div>
+        </section>
+
+        <section id="practice" class="panel practice-section">
+          <div class="panel-head">
+            <div>
+              <p class="section-label">Answer Training</p>
+              <h3>答题训练</h3>
+            </div>
+          </div>
+          <div class="answer-template">
+            <div>
+              <h4>通用结构</h4>
+              <p><b>观点</b>：先判断人物特点或情节作用。</p>
+              <p><b>情节</b>：引用本回或前后回的具体事件。</p>
+              <p><b>分析</b>：说明细节如何表现人物、关系或主题。</p>
+              <p><b>升华</b>：联系家族衰败、女性命运、礼法与真情等整本书主题。</p>
+            </div>
+            <div>
+              <h4>常见问法</h4>
+              <ul>
+                <li>结合具体情节，分析某人物形象。</li>
+                <li>某一回在全书结构中有什么作用？</li>
+                <li>两个人物或两个情节形成怎样的对照？</li>
+                <li>某一事件如何体现贾府由盛转衰？</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

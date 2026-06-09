@@ -1,0 +1,15 @@
+{
+  "name": "红楼梦高考地图",
+  "short_name": "红楼梦地图",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "display": "standalone",
+  "background_color": "#f4efe3",
+  "theme_color": "#a33b2b"
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <radialGradient id="paper" cx="35%" cy="25%" r="80%">
+      <stop offset="0%" stop-color="#c85945"/>
+      <stop offset="72%" stop-color="#a33b2b"/>
+      <stop offset="100%" stop-color="#793126"/>
+    </radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#f4efe3"/>
+  <circle cx="64" cy="64" r="52" fill="url(#paper)"/>
+  <circle cx="64" cy="64" r="48" fill="none" stroke="#f5dfc1" stroke-width="3"/>
+  <text x="64" y="78" text-anchor="middle" font-size="54" font-family="Songti SC, STSong, serif" font-weight="700" fill="#fff8ef">梦</text>
+</svg>
