@@ -49,7 +49,7 @@
           <div class="hero-metrics" aria-label="内容概览">
             <div><strong id="metric-chapters">120</strong><span>回章节</span></div>
             <div><strong>18</strong><span>精讲重点回</span></div>
-            <div><strong>6</strong><span>高考专题</span></div>
+            <div><strong id="metric-topics">9</strong><span>高考专题</span></div>
             <div><strong>30+</strong><span>核心人物</span></div>
           </div>
         </section>
@@ -125,24 +125,16 @@
               <p class="section-label">Answer Training</p>
               <h3>答题训练</h3>
             </div>
+            <span id="practiceCount">加载中</span>
           </div>
-          <div class="answer-template">
-            <div>
-              <h4>通用结构</h4>
-              <p><b>观点</b>：先判断人物特点或情节作用。</p>
-              <p><b>情节</b>：引用本回或前后回的具体事件。</p>
-              <p><b>分析</b>：说明细节如何表现人物、关系或主题。</p>
-              <p><b>升华</b>：联系家族衰败、女性命运、礼法与真情等整本书主题。</p>
-            </div>
-            <div>
-              <h4>常见问法</h4>
-              <ul>
-                <li>结合具体情节，分析某人物形象。</li>
-                <li>某一回在全书结构中有什么作用？</li>
-                <li>两个人物或两个情节形成怎样的对照？</li>
-                <li>某一事件如何体现贾府由盛转衰？</li>
-              </ul>
-            </div>
+          <div class="practice-layout">
+            <aside class="practice-picker">
+              <div id="practiceFilters" class="practice-filters" aria-label="答题题型筛选"></div>
+              <div id="practiceList" class="practice-list"></div>
+            </aside>
+            <article id="practiceDetail" class="practice-detail">
+              <div class="empty-state">正在加载训练题。</div>
+            </article>
           </div>
         </section>
       </main>

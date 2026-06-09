@@ -2,12 +2,15 @@ const state = {
   chapters: [],
   relations: [],
   topics: [],
+  practiceQuestions: [],
   selected: 3,
   filter: "all",
   query: "",
   relationFilter: "all",
   selectedRelationNode: "",
   selectedTopic: "first-five",
+  practiceType: "全部",
+  selectedPractice: "",
 };
 
 const els = {
@@ -21,6 +24,10 @@ const els = {
   relationFilters: [...document.querySelectorAll(".relation-filter")],
   topicGrid: document.querySelector("#topicGrid"),
   topicDetail: document.querySelector("#topicDetail"),
+  practiceFilters: document.querySelector("#practiceFilters"),
+  practiceList: document.querySelector("#practiceList"),
+  practiceDetail: document.querySelector("#practiceDetail"),
+  practiceCount: document.querySelector("#practiceCount"),
 };
 
 const relationColors = {
@@ -262,6 +269,85 @@ function renderTopicDetail() {
   `;
 }
 
+function practiceTypes() {
+  return ["全部", ...new Set(state.practiceQuestions.map((item) => item.type))];
+}
+
+function filteredPracticeQuestions() {
+  if (state.practiceType === "全部") return state.practiceQuestions;
+  return state.practiceQuestions.filter((item) => item.type === state.practiceType);
+}
+
+function renderPractice() {
+  if (!els.practiceFilters || !els.practiceList || !els.practiceDetail) return;
+  const types = practiceTypes();
+  const questions = filteredPracticeQuestions();
+  if (!state.selectedPractice || !questions.some((item) => item.id === state.selectedPractice)) {
+    state.selectedPractice = questions[0]?.id || "";
+  }
+  els.practiceCount.textContent = `${questions.length} / ${state.practiceQuestions.length} 题`;
+  els.practiceFilters.innerHTML = types.map((type) => `
+    <button class="practice-filter ${type === state.practiceType ? "active" : ""}" data-practice-type="${type}">
+      ${type}
+    </button>
+  `).join("");
+  els.practiceList.innerHTML = questions.map((item) => `
+    <button class="practice-card ${item.id === state.selectedPractice ? "active" : ""}" data-practice-id="${item.id}">
+      <span>${item.type} · ${item.level}</span>
+      <strong>${item.question}</strong>
+      <em>${item.topic}</em>
+    </button>
+  `).join("");
+  renderPracticeDetail();
+}
+
+function renderPracticeDetail() {
+  const item = state.practiceQuestions.find((question) => question.id === state.selectedPractice) || filteredPracticeQuestions()[0];
+  if (!item) {
+    els.practiceDetail.innerHTML = `<div class="empty-state">暂无训练题。</div>`;
+    return;
+  }
+  state.selectedPractice = item.id;
+  els.practiceDetail.innerHTML = `
+    <div class="practice-detail-head">
+      <div>
+        <span class="practice-badge">${item.type} · ${item.level}</span>
+        <h4>${item.question}</h4>
+      </div>
+      <span>${item.topic}</span>
+    </div>
+    <section class="practice-block">
+      <h5>三步答题法</h5>
+      <div class="practice-steps">
+        ${item.thinking.map((step, index) => `
+          <div>
+            <strong>${index + 1}</strong>
+            <p>${step}</p>
+          </div>
+        `).join("")}
+      </div>
+    </section>
+    <section class="practice-block">
+      <h5>得分点</h5>
+      <div class="chips">${item.points.map((point) => `<span class="chip">${point}</span>`).join("")}</div>
+    </section>
+    <section class="practice-block answer-block">
+      <h5>参考答案</h5>
+      <p>${item.answer}</p>
+    </section>
+    <section class="practice-block">
+      <h5>容易丢分点</h5>
+      <p>${item.pitfall}</p>
+    </section>
+    <section class="practice-block">
+      <h5>相关章节</h5>
+      <div class="topic-chapter-buttons">
+        ${item.chapters.map((chapter) => `<button data-practice-chapter="${chapter}">${chapterLabel(chapter)}</button>`).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function bindEvents() {
   els.grid.addEventListener("click", (event) => {
     const button = event.target.closest("[data-chapter]");
@@ -345,6 +431,34 @@ function bindEvents() {
     renderDetail();
     document.querySelector("#chapters").scrollIntoView({ behavior: "smooth", block: "start" });
   });
+
+  els.practiceFilters.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-practice-type]");
+    if (!button) return;
+    state.practiceType = button.dataset.practiceType;
+    state.selectedPractice = "";
+    renderPractice();
+  });
+
+  els.practiceList.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-practice-id]");
+    if (!button) return;
+    state.selectedPractice = button.dataset.practiceId;
+    renderPractice();
+  });
+
+  els.practiceDetail.addEventListener("click", (event) => {
+    const chapterButton = event.target.closest("[data-practice-chapter]");
+    if (!chapterButton) return;
+    state.filter = "all";
+    state.query = "";
+    els.search.value = "";
+    els.filters.forEach((item) => item.classList.toggle("active", item.dataset.filter === "all"));
+    state.selected = Number(chapterButton.dataset.practiceChapter);
+    renderChapters();
+    renderDetail();
+    document.querySelector("#chapters").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 }
 
 async function init() {
@@ -355,13 +469,17 @@ async function init() {
     state.chapters = data.chapters;
     state.relations = data.relations;
     state.topics = data.topics;
+    state.practiceQuestions = data.practice_questions || [];
     state.selectedTopic = state.topics[0]?.id || state.selectedTopic;
+    state.selectedPractice = state.practiceQuestions[0]?.id || "";
     document.querySelector("#metric-chapters").textContent = state.chapters.length;
+    document.querySelector("#metric-topics").textContent = state.topics.length;
     bindEvents();
     renderChapters();
     renderDetail();
     renderRelations();
     renderTopics();
+    renderPractice();
     if (window.location.hash) {
       document.querySelector(window.location.hash)?.scrollIntoView({ block: "start" });
     }
