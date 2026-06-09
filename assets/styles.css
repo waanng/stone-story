@@ -124,29 +124,6 @@ input {
   color: var(--cinnabar);
 }
 
-.study-plan {
-  margin-top: auto;
-  padding: 16px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: rgba(255, 250, 239, 0.68);
-}
-
-.study-plan span {
-  display: block;
-  color: var(--cinnabar);
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-
-.study-plan ol {
-  margin: 0;
-  padding-left: 20px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.8;
-}
-
 main {
   position: relative;
   min-width: 0;
@@ -1043,10 +1020,6 @@ main {
 
   .nav {
     grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  .study-plan {
-    display: none;
   }
 
   .hero-section,
