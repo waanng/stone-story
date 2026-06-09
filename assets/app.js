@@ -5,6 +5,8 @@ const state = {
   selected: 3,
   filter: "all",
   query: "",
+  relationFilter: "all",
+  selectedRelationNode: "",
 };
 
 const els = {
@@ -15,19 +17,18 @@ const els = {
   filters: [...document.querySelectorAll(".filter")],
   relationSvg: document.querySelector("#relationSvg"),
   relationNotes: document.querySelector("#relationNotes"),
+  relationFilters: [...document.querySelectorAll(".relation-filter")],
   topicGrid: document.querySelector("#topicGrid"),
 };
 
 const relationColors = {
-  "情感/知己": "#a33b2b",
-  "婚姻/对照": "#b4893c",
-  "对照/竞争": "#6f4a8e",
-  "权力/依附": "#2c6a68",
-  "婚姻/冲突": "#5f5146",
-  "管理/对照": "#2c6a68",
-  "主仆/欣赏": "#8b5e3c",
-  "主仆/情感支持": "#8b5e3c",
-  "贫富/外部视角": "#4f6f52",
+  "情感": "#a33b2b",
+  "婚姻": "#b4893c",
+  "亲属": "#8b5e3c",
+  "权力": "#2c6a68",
+  "主仆": "#6f4a8e",
+  "冲突": "#5f5146",
+  "对照": "#4f6f52",
 };
 
 function stars(num) {
@@ -112,38 +113,83 @@ function renderDetail() {
 
 function renderRelations() {
   const positions = {
-    "贾宝玉": [450, 205],
-    "林黛玉": [250, 105],
-    "薛宝钗": [650, 105],
-    "王熙凤": [660, 310],
-    "贾母": [450, 55],
-    "探春": [235, 305],
-    "贾琏": [810, 315],
-    "晴雯": [450, 360],
-    "紫鹃": [95, 112],
-    "贾府": [105, 315],
-    "刘姥姥": [95, 390],
+    "贾宝玉": [520, 290],
+    "林黛玉": [300, 170],
+    "薛宝钗": [740, 170],
+    "贾母": [520, 70],
+    "王夫人": [700, 300],
+    "贾政": [520, 500],
+    "袭人": [330, 405],
+    "晴雯": [480, 435],
+    "紫鹃": [170, 185],
+    "王熙凤": [830, 380],
+    "贾琏": [990, 380],
+    "探春": [655, 505],
+    "赵姨娘": [815, 555],
+    "香菱": [910, 95],
+    "薛蟠": [1030, 165],
+    "刘姥姥": [140, 525],
+    "贾府": [295, 525],
+    "贾雨村": [120, 350],
+    "秦可卿": [875, 515],
+    "元春": [660, 65],
+    "尤二姐": [1000, 515],
   };
-  const nodes = Object.keys(positions);
-  const lines = state.relations
+  const filteredRelations = state.relations.filter((rel) => {
+    const categoryOk = state.relationFilter === "all" || rel.category === state.relationFilter;
+    const nodeOk = !state.selectedRelationNode || rel.source === state.selectedRelationNode || rel.target === state.selectedRelationNode;
+    return positions[rel.source] && positions[rel.target] && categoryOk && nodeOk;
+  });
+  const visibleNodeNames = new Set(filteredRelations.flatMap((rel) => [rel.source, rel.target]));
+  const nodes = Object.keys(positions).filter((name) => visibleNodeNames.has(name) || !state.selectedRelationNode);
+  const lineGroups = state.relations
     .filter((rel) => positions[rel.source] && positions[rel.target])
-    .map((rel) => {
+    .map((rel, index) => {
       const [x1, y1] = positions[rel.source];
       const [x2, y2] = positions[rel.target];
-      const color = relationColors[rel.type] || "#72675c";
-      return `<line class="relation-line" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" />`;
+      const color = relationColors[rel.category] || "#72675c";
+      const categoryOk = state.relationFilter === "all" || rel.category === state.relationFilter;
+      const nodeOk = !state.selectedRelationNode || rel.source === state.selectedRelationNode || rel.target === state.selectedRelationNode;
+      const visible = categoryOk && nodeOk;
+      const muted = !visible ? " muted" : "";
+      const mx = (x1 + x2) / 2;
+      const my = (y1 + y2) / 2;
+      return `
+        <g class="relation-edge${muted}" data-relation-index="${index}" tabindex="0" role="button" aria-label="${rel.source}和${rel.target}的关系：${rel.type}">
+          <line class="relation-line" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" />
+          <text class="relation-label" x="${mx}" y="${my}" fill="${color}">${rel.type}</text>
+        </g>
+      `;
     }).join("");
   const nodeMarkup = nodes.map((name) => {
     const [x, y] = positions[name];
-    return `<g class="relation-node"><circle cx="${x}" cy="${y}" r="38"></circle><text x="${x}" y="${y}">${name}</text></g>`;
+    const active = name === state.selectedRelationNode ? " active" : "";
+    return `<g class="relation-node${active}" data-node="${name}" tabindex="0" role="button" aria-label="查看${name}的人物关系"><circle cx="${x}" cy="${y}" r="38"></circle><text x="${x}" y="${y}">${name}</text></g>`;
   }).join("");
-  els.relationSvg.innerHTML = `${lines}${nodeMarkup}`;
-  els.relationNotes.innerHTML = state.relations.slice(0, 7).map((rel) => `
-    <div class="relation-note">
-      <strong>${rel.source} → ${rel.target}</strong>
-      <p>${rel.type}：${rel.note}</p>
+  const legend = Object.entries(relationColors).map(([category, color], index) => {
+    const x = 24 + index * 86;
+    return `<g class="relation-legend"><circle cx="${x}" cy="24" r="6" fill="${color}" /><text x="${x + 12}" y="28">${category}</text></g>`;
+  }).join("");
+  els.relationSvg.innerHTML = `${legend}${lineGroups}${nodeMarkup}`;
+  const noteRelations = filteredRelations.length ? filteredRelations : state.relations.slice(0, 8);
+  const heading = state.selectedRelationNode
+    ? `${state.selectedRelationNode}的关系`
+    : state.relationFilter === "all" ? "核心关系说明" : `${state.relationFilter}关系`;
+  els.relationNotes.innerHTML = `
+    <div class="relation-summary">
+      <strong>${heading}</strong>
+      <p>${state.selectedRelationNode ? "再次点击该人物可回到全局视图。" : "点击人物或关系线，会高亮相关关系并显示关键章节。"}</p>
     </div>
-  `).join("");
+    ${noteRelations.map((rel, index) => `
+      <div class="relation-note" data-note-index="${state.relations.indexOf(rel)}">
+        <strong><span style="color:${relationColors[rel.category] || "#72675c"}">●</span> ${rel.source} ↔ ${rel.target}</strong>
+        <p><b>${rel.type}</b>：${rel.note}</p>
+        <div class="relation-chapters">
+          ${rel.chapters.map((chapter) => `<button data-relation-chapter="${chapter}">第${String(chapter).padStart(3, "0")}回</button>`).join("")}
+        </div>
+      </div>
+    `).join("")}
+  `;
 }
 
 function renderTopics() {
@@ -178,6 +224,43 @@ function bindEvents() {
     });
   });
 
+  els.relationFilters.forEach((button) => {
+    button.addEventListener("click", () => {
+      state.relationFilter = button.dataset.relationFilter;
+      state.selectedRelationNode = "";
+      els.relationFilters.forEach((item) => item.classList.toggle("active", item === button));
+      renderRelations();
+    });
+  });
+
+  els.relationSvg.addEventListener("click", (event) => {
+    const node = event.target.closest("[data-node]");
+    if (node) {
+      const name = node.dataset.node;
+      state.selectedRelationNode = state.selectedRelationNode === name ? "" : name;
+      renderRelations();
+      return;
+    }
+    const edge = event.target.closest("[data-relation-index]");
+    if (edge) {
+      const rel = state.relations[Number(edge.dataset.relationIndex)];
+      if (!rel) return;
+      state.selectedRelationNode = "";
+      state.relationFilter = rel.category;
+      els.relationFilters.forEach((item) => item.classList.toggle("active", item.dataset.relationFilter === rel.category));
+      renderRelations();
+    }
+  });
+
+  els.relationNotes.addEventListener("click", (event) => {
+    const chapterButton = event.target.closest("[data-relation-chapter]");
+    if (!chapterButton) return;
+    state.selected = Number(chapterButton.dataset.relationChapter);
+    renderChapters();
+    renderDetail();
+    document.querySelector("#chapters").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
   els.topicGrid.addEventListener("click", (event) => {
     const button = event.target.closest("[data-topic]");
     if (!button) return;
@@ -208,6 +291,9 @@ async function init() {
     renderDetail();
     renderRelations();
     renderTopics();
+    if (window.location.hash) {
+      document.querySelector(window.location.hash)?.scrollIntoView({ block: "start" });
+    }
   } catch (error) {
     els.detail.innerHTML = `<div class="empty-state">章节数据没有加载成功：${error.message}。如果是直接打开文件，请用本目录的本地服务访问。</div>`;
   }

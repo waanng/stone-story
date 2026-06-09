@@ -471,28 +471,90 @@ main {
 
 .relationship-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   gap: 20px;
   align-items: center;
 }
 
+.relation-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -4px 0 18px;
+}
+
+.relation-filter {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0 12px;
+  color: var(--muted);
+  background: rgba(255,255,255,0.42);
+  cursor: pointer;
+}
+
+.relation-filter.active,
+.relation-filter:hover {
+  color: #fff8ef;
+  border-color: var(--teal);
+  background: var(--teal);
+}
+
 #relationSvg {
   width: 100%;
-  min-height: 420px;
+  min-height: 560px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(244,239,227,0.45);
 }
 
+.relation-edge {
+  cursor: pointer;
+  transition: opacity 160ms ease;
+}
+
+.relation-edge.muted {
+  opacity: 0.12;
+}
+
 .relation-line {
-  stroke-width: 2.5;
+  stroke-width: 3;
   opacity: 0.8;
+}
+
+.relation-label {
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  paint-order: stroke;
+  stroke: rgba(255, 250, 239, 0.96);
+  stroke-width: 8px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.relation-legend text {
+  fill: var(--muted);
+  font-size: 13px;
+}
+
+.relation-node {
+  cursor: pointer;
 }
 
 .relation-node circle {
   fill: #fff8ef;
   stroke: var(--cinnabar);
   stroke-width: 2;
+  transition: fill 160ms ease, stroke-width 160ms ease, transform 160ms ease;
+  transform-origin: center;
+}
+
+.relation-node:hover circle,
+.relation-node.active circle {
+  fill: rgba(163, 59, 43, 0.12);
+  stroke-width: 4;
 }
 
 .relation-node text {
@@ -506,6 +568,28 @@ main {
 .relation-notes {
   display: grid;
   gap: 10px;
+  max-height: 560px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.relation-summary {
+  padding: 14px;
+  border: 1px solid rgba(163, 59, 43, 0.22);
+  border-radius: var(--radius);
+  background: rgba(163, 59, 43, 0.08);
+}
+
+.relation-summary strong {
+  color: var(--cinnabar);
+  font-size: 17px;
+}
+
+.relation-summary p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 13px;
 }
 
 .relation-note {
@@ -524,6 +608,32 @@ main {
   color: var(--muted);
   line-height: 1.6;
   font-size: 13px;
+}
+
+.relation-note b {
+  color: var(--ink);
+}
+
+.relation-chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.relation-chapters button {
+  border: 1px solid rgba(44, 106, 104, 0.22);
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: var(--teal);
+  background: rgba(44, 106, 104, 0.08);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.relation-chapters button:hover {
+  color: #fff8ef;
+  background: var(--teal);
 }
 
 .topic-grid {

@@ -90,10 +90,20 @@
               <p class="section-label">Relationship</p>
               <h3>人物关系图</h3>
             </div>
-            <span>颜色区分关系类型</span>
+            <span id="relationHint">点击人物或关系线查看说明</span>
+          </div>
+          <div class="relation-toolbar" aria-label="人物关系筛选">
+            <button class="relation-filter active" data-relation-filter="all">全部关系</button>
+            <button class="relation-filter" data-relation-filter="情感">情感</button>
+            <button class="relation-filter" data-relation-filter="婚姻">婚姻</button>
+            <button class="relation-filter" data-relation-filter="亲属">亲属</button>
+            <button class="relation-filter" data-relation-filter="权力">权力</button>
+            <button class="relation-filter" data-relation-filter="主仆">主仆</button>
+            <button class="relation-filter" data-relation-filter="冲突">冲突</button>
+            <button class="relation-filter" data-relation-filter="对照">对照</button>
           </div>
           <div class="relationship-layout">
-            <svg id="relationSvg" viewBox="0 0 900 420" role="img" aria-label="红楼梦核心人物关系图"></svg>
+            <svg id="relationSvg" viewBox="0 0 1100 640" role="img" aria-label="红楼梦核心人物关系图"></svg>
             <div id="relationNotes" class="relation-notes"></div>
           </div>
         </section>
